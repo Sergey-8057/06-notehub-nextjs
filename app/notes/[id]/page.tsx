@@ -2,8 +2,6 @@ import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query
 import { fetchNoteById } from '../../../lib/api';
 import NoteDetailsClient from './NoteDetails.client';
 
-export const dynamic = 'force-dynamic';
-
 type Props = {
   params: Promise<{ id: string }>;
 };
