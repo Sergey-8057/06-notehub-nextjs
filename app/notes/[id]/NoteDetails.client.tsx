@@ -5,21 +5,22 @@ import { useParams } from 'next/navigation';
 import { fetchNoteById } from '../../../lib/api';
 import css from './NoteDetails.module.css';
 
-export default function NoteDetailsClient() {
-  const params = useParams();
-  const noteId = params.id as string;
-
+const NoteDetailsClient = () => {
+  const { id } = useParams<{ id: string }>();
   const {
     data: note,
     isLoading,
-    isError,
+    error,
   } = useQuery({
-    queryKey: ['note', noteId],
-    queryFn: () => fetchNoteById(noteId),
+    queryKey: ['note', id],
+    queryFn: () => fetchNoteById(id),
+    refetchOnMount: false,
   });
 
-  if (isLoading) return <p>Loading, please wait...</p>;
-  if (isError || !note) return <p>Something went wrong.</p>;
+  if (isLoading) return <p>Loading...</p>;
+  if (error || !note) return <p>Some error occurred</p>;
+
+  const formattedDate = new Date(note.updatedAt || note.createdAt).toLocaleDateString();
 
   return (
     <div className={css.container}>
@@ -29,8 +30,12 @@ export default function NoteDetailsClient() {
         </div>
         <p className={css.content}>{note.content}</p>
         <p className={css.tag}>Tag: {note.tag}</p>
-        <p className={css.date}>Created: {new Date(note.createdAt).toLocaleDateString()}</p>
+        <p className={css.date}>
+          {note.updatedAt ? 'Updated' : 'Created'}: {formattedDate}
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default NoteDetailsClient;

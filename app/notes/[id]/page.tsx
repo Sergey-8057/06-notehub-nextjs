@@ -4,9 +4,12 @@ import NoteDetailsClient from './NoteDetails.client';
 
 export const dynamic = 'force-dynamic';
 
-export default async function NoteDetailsPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-  const { id } = await Promise.resolve(params);
+const NoteDetailsPage = async ({ params }: Props) => {
+  const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -19,4 +22,6 @@ export default async function NoteDetailsPage({ params }: { params: { id: string
       <NoteDetailsClient />
     </HydrationBoundary>
   );
-}
+};
+
+export default NoteDetailsPage;
