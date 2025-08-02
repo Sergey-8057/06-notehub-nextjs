@@ -1,22 +1,33 @@
-import type { DebouncedState } from 'use-debounce';
+'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 import css from './SearchBox.module.css';
 
 interface SearchBoxProps {
-  value: string;
-  onSearch: DebouncedState<(newSearchQuery: string) => void>;
+  initialValue: string;
 }
 
-export default function SearchBox({ value, onSearch }: SearchBoxProps) {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(event.target.value);
-  };
+export default function SearchBox({ initialValue }: SearchBoxProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handleSearch = useDebouncedCallback((value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set('search', value);
+      params.set('page', '1');
+    } else {
+      params.delete('search');
+    }
+    router.push(`/notes?${params.toString()}`);
+  }, 300);
 
   return (
     <input
       className={css.input}
-      defaultValue={value}
-      onChange={handleChange}
+      defaultValue={initialValue}
+      onChange={e => handleSearch(e.target.value)}
       type="text"
       placeholder="Search notes"
     />

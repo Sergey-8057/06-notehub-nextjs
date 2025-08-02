@@ -24,12 +24,17 @@ export const fetchNotes = async (search: string, page: number, perPage: number) 
   return res.data;
 };
 
+export const fetchNoteById = async (noteId: string) => {
+  const res = await axios.get<Note>(`/notes/${noteId}`);
+  return res.data;
+};
+
 export const createNote = async (noteData: NewNoteData) => {
   const res = await axios.post<Note>('/notes', noteData);
   return res.data;
 };
 
-export const deleteNote = async (noteId: number) => {
+export const deleteNote = async (noteId: string) => {
   const res = await axios.delete<Note>(`/notes/${noteId}`);
   return res.data;
 };
