@@ -4,6 +4,7 @@ import NoteDetailsClient from './NoteDetails.client';
 
 interface Props {
   params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default async function NoteDetailsPage({ params }: Props) {
