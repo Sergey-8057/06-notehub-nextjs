@@ -42,7 +42,7 @@ export default function NotesClient({ initialData, initialSearchParams }: NotesC
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox initialValue={search} onSearchChange={debouncedSetSearch} />
+        <SearchBox value={search} onSearchChange={debouncedSetSearch} />
         {response?.totalPages > 1 && (
           <Pagination currentPage={page} totalPages={response.totalPages} onPageChange={setPage} />
         )}
