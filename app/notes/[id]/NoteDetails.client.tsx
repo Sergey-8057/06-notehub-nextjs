@@ -17,8 +17,9 @@ const NoteDetailsClient = () => {
     refetchOnMount: false,
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error || !note) return <p>Some error occurred</p>;
+  if (isLoading) return <p>Loading, please wait...</p>;
+  if (error) return <p>Something went wrong.</p>;
+  if (!note) return <p>Note not found.</p>;
 
   const formattedDate = note.updatedAt
     ? `Updated at: ${new Date(note.updatedAt).toLocaleDateString()}`
@@ -27,9 +28,11 @@ const NoteDetailsClient = () => {
   return (
     <div className={css.container}>
       <div className={css.item}>
-        <h2>{note.title}</h2>
-        <p>{note.content}</p>
-        <p>{formattedDate}</p>
+        <div className={css.header}>
+          <h2>{note.title}</h2>
+        </div>
+        <p className={css.content}>{note.content}</p>
+        <p className={css.date}>{formattedDate}</p>
       </div>
     </div>
   );
