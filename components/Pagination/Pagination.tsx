@@ -1,22 +1,17 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
 import ReactPaginate from 'react-paginate';
 import css from './Pagination.module.css';
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-export default function Pagination({ currentPage, totalPages }: PaginationProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
+export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const handlePageChange = ({ selected }: { selected: number }) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', (selected + 1).toString());
-    router.push(`/notes?${params.toString()}`);
+    onPageChange(selected + 1);
   };
 
   return (

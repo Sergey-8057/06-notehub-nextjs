@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNotes, NotesResponse } from '../../lib/api';
 import NoteList from '../../components/NoteList/NoteList';
@@ -10,6 +9,7 @@ import Pagination from '../../components/Pagination/Pagination';
 import Modal from '../../components/Modal/Modal';
 import NoteForm from '../../components/NoteForm/NoteForm';
 import css from './NotesPage.module.css';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface NotesClientProps {
   initialData: NotesResponse;
@@ -20,12 +20,15 @@ interface NotesClientProps {
 }
 
 export default function NotesClient({ initialData, initialSearchParams }: NotesClientProps) {
+  const [search, setSearch] = useState(initialSearchParams.search);
+  const [page, setPage] = useState(initialSearchParams.page);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const searchParams = useSearchParams();
-
-  const search = searchParams.get('search') ?? initialSearchParams.search;
-  const page = Number(searchParams.get('page')) || initialSearchParams.page;
   const perPage = 12;
+
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setSearch(value);
+    setPage(1);
+  }, 300);
 
   const { data: response } = useQuery<NotesResponse>({
     queryKey: ['notes', search, page],
@@ -39,9 +42,9 @@ export default function NotesClient({ initialData, initialSearchParams }: NotesC
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox initialValue={search} />
+        <SearchBox initialValue={search} onSearchChange={debouncedSetSearch} />
         {response?.totalPages > 1 && (
-          <Pagination currentPage={page} totalPages={response.totalPages} />
+          <Pagination currentPage={page} totalPages={response.totalPages} onPageChange={setPage} />
         )}
         <button className={css.button} onClick={() => setIsModalOpen(true)}>
           Create note +
