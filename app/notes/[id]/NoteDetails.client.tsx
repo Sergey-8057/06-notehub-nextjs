@@ -20,19 +20,16 @@ const NoteDetailsClient = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error || !note) return <p>Some error occurred</p>;
 
-  const formattedDate = new Date(note.updatedAt || note.createdAt).toLocaleDateString();
+  const formattedDate = note.updatedAt
+    ? `Updated at: ${new Date(note.updatedAt).toLocaleDateString()}`
+    : `Created at: ${new Date(note.createdAt).toLocaleDateString()}`;
 
   return (
     <div className={css.container}>
       <div className={css.item}>
-        <div className={css.header}>
-          <h2>{note.title}</h2>
-        </div>
-        <p className={css.content}>{note.content}</p>
-        <p className={css.tag}>Tag: {note.tag}</p>
-        <p className={css.date}>
-          {note.updatedAt ? 'Updated' : 'Created'}: {formattedDate}
-        </p>
+        <h2>{note.title}</h2>
+        <p>{note.content}</p>
+        <p>{formattedDate}</p>
       </div>
     </div>
   );
